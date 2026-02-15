@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Be My Valentine 💌</title>
+
+<style>
+/* ---------- RESET ---------- */
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+html,body{height:100%;overflow:hidden;}
+
+/* ---------- BACKGROUND ---------- */
+body{
+background:linear-gradient(135deg,#ff9ecf,#ffc6e5,#ffd9ef,#ffeef7);
+background-size:300% 300%;
+animation:bgmove 12s ease infinite;
+}
+@keyframes bgmove{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+/* floating hearts */
+.bg-hearts{
+position:fixed;inset:0;z-index:-1;overflow:hidden;
+}
+.heart{
+position:absolute;width:20px;height:20px;background:#ff4f8b;
+transform:rotate(45deg);opacity:.5;
+animation:float linear infinite;
+}
+.heart:before,.heart:after{
+content:"";position:absolute;width:20px;height:20px;background:#ff4f8b;border-radius:50%;
+}
+.heart:before{top:-10px;left:0}
+.heart:after{left:-10px;top:0}
+@keyframes float{
+0%{transform:translateY(110vh) rotate(45deg);opacity:.7}
+100%{transform:translateY(-20vh) rotate(45deg);opacity:0}
+}
+
+/* ---------- CARD ---------- */
+.wrapper{
+display:flex;align-items:center;justify-content:center;height:100%;
+padding:20px;
+}
+.card{
+background:rgba(255,255,255,.75);
+backdrop-filter:blur(14px);
+border-radius:30px;
+padding:45px 30px;
+text-align:center;
+max-width:420px;width:100%;
+box-shadow:0 20px 60px rgba(255,100,160,.25);
+animation:pop .8s ease;
+}
+@keyframes pop{
+0%{transform:scale(.6);opacity:0}
+100%{transform:scale(1);opacity:1}
+}
+
+/* ---------- TITLE ---------- */
+h1{
+font-size:2.3rem;
+color:#ff2f75;
+animation:heartbeat 1s infinite alternate;
+}
+@keyframes heartbeat{
+from{transform:scale(1)}
+to{transform:scale(1.12)}
+}
+
+.subtitle{
+margin-top:12px;
+color:#6d6d6d;
+min-height:24px;
+transition:.3s;
+}
+
+/* ---------- BUTTONS ---------- */
+.buttons{margin-top:35px;position:relative;height:150px;}
+
+button{
+border:none;
+padding:15px 32px;
+font-size:1.15rem;
+border-radius:999px;
+cursor:pointer;
+transition:.25s;
+position:absolute;
+user-select:none;
+}
+
+#yes{
+left:18%;
+background:linear-gradient(135deg,#ff4f8b,#ff7fb2);
+color:white;
+box-shadow:0 10px 25px rgba(255,60,130,.5);
+}
+#yes:hover{transform:scale(1.15)}
+
+#no{
+right:18%;
+background:white;
+color:#ff4f8b;
+box-shadow:0 8px 20px rgba(0,0,0,.15);
+}
+
+/* ---------- CELEBRATION ---------- */
+.celebrate{
+position:fixed;inset:0;
+display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+background:linear-gradient(135deg,#ff7ab6,#ffb3dc,#ffe3f4);
+animation:fade .5s forwards;
+}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+.big{
+font-size:2.5rem;font-weight:700;color:#ff0055;margin-bottom:15px;
+animation:bounce 1s infinite alternate;
+}
+@keyframes bounce{
+from{transform:translateY(0)}
+to{transform:translateY(-12px)}
+}
+.small{color:#5a5a5a;margin-bottom:30px}
+
+.replay{
+background:white;border-radius:999px;padding:14px 30px;
+box-shadow:0 10px 25px rgba(0,0,0,.2);cursor:pointer;
+transition:.2s;
+}
+.replay:hover{transform:scale(1.1)}
+
+/* confetti */
+.confetti{position:absolute;width:10px;height:10px;animation:fall 3s linear forwards}
+@keyframes fall{to{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+@media(max-width:480px){
+h1{font-size:2rem}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-hearts" id="bg"></div>
+
+<div class="wrapper">
+<div class="card">
+<h1>Will you be my Valentine? 💌</h1>
+<div class="subtitle" id="msg">I promise snacks, memes & unlimited attention 😌</div>
+
+<div class="buttons">
+<button id="yes">YES 💖</button>
+<button id="no">NO 😒</button>
+</div>
+</div>
+</div>
+
+<script>
+/* --------- HEART BACKGROUND --------- */
+const bg=document.getElementById("bg");
+for(let i=0;i<40;i++){
+let h=document.createElement("div");
+h.className="heart";
+h.style.left=Math.random()*100+"%";
+h.style.animationDuration=(6+Math.random()*8)+"s";
+h.style.opacity=Math.random();
+bg.appendChild(h);
+}
+
+/* --------- BUTTON LOGIC --------- */
+const noBtn=document.getElementById("no");
+const yesBtn=document.getElementById("yes");
+const msg=document.getElementById("msg");
+
+let tries=0;
+const texts=[
+"Are you sure? 🥺",
+"Think again 😤",
+"You can’t escape destiny 💘",
+"Just press yes already 😭",
+"I'll wait forever... but why 😭"
+];
+
+function moveNo(e){
+tries++;
+msg.textContent=texts[Math.min(tries-1,texts.length-1)];
+
+let x=Math.random()*70+10;
+let y=Math.random()*60+10;
+noBtn.style.left=x+"%";
+noBtn.style.top=y+"%";
+noBtn.style.transform=`rotate(${Math.random()*70-35}deg) scale(${Math.max(.25,1-tries*.1)})`;
+
+if(tries>=5){
+yesBtn.style.transform="scale(1.7)";
+}
+}
+
+noBtn.addEventListener("mouseover",moveNo);
+noBtn.addEventListener("click",moveNo);
+
+/* --------- YES CLICK --------- */
+yesBtn.onclick=()=>{
+document.body.innerHTML="";
+let div=document.createElement("div");
+div.className="celebrate";
+div.innerHTML=`
+<div class="big">YAYYY 💞 You just made me the happiest person!</div>
+<div class="small">Now you’re officially my Valentine 💌</div>
+<div class="replay" onclick="location.reload()">Replay</div>
+`;
+document.body.appendChild(div);
+
+/* confetti */
+for(let i=0;i<140;i++){
+let c=document.createElement("div");
+c.className="confetti";
+c.style.left=Math.random()*100+"%";
+c.style.top="-10px";
+c.style.background=`hsl(${Math.random()*360},90%,70%)`;
+c.style.animationDuration=(2+Math.random()*2)+"s";
+document.body.appendChild(c);
+}
+
+/* heart burst */
+for(let i=0;i<50;i++){
+let h=document.createElement("div");
+h.className="heart";
+h.style.left=Math.random()*100+"%";
+h.style.top=Math.random()*100+"%";
+h.style.animationDuration="4s";
+document.body.appendChild(h);
+}
+};
+</script>
+</body>
+</html>
